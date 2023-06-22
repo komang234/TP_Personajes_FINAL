@@ -1,14 +1,16 @@
-import 'dotenv/config';
+import 'dotenv/config'
+
+console.log(process.env.SERVER)
 
 const config = {
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    server: process.env.DB_SERVER,
-    database: process.env.DB_NAME,
+    user: process.env.USER,
+    password: process.env.PASSWORD,
+    server: process.env.SERVER,
+    database: process.env.DATABASE,
     options: {
         trustServerCertificate: true,
         trustedConnection: true,
     }
 }
 
-export default config
+export default config;
