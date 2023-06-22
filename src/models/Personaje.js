@@ -1,9 +1,9 @@
-class Personaje{
-    id;
-    imagen;
-    nombre;
-    edad;
-    peso;
-    historia;
+export default class Personaje {
+    IDPersonaje;
+    Imagen;
+    Nombre;
+    Edad;
+    Peso;
+    Historia;
+    IdPelicula;
 }
-export default Personaje;
