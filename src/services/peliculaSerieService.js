@@ -1,103 +1,46 @@
-import PeliculaSerie from "../models/PeliculaSerie.js";
-import Personaje from "../models/Personaje.js";
-import sql from 'mssql'
-import configDB from "../models/db.js";
+import sql from 'mssql';
+import configDB from '../models/db.js';
 
-
-export const getByParams = async (nombre, orden) =>{
-    const conn = await sql.connect(configDB)
-    let results = 0
-    if(nombre)
-    {
-        
-        if(orden == "ASC")
-        {
-            results = await conn.request().input("whereCondition", nombre).query(`SELECT Id, Imagen, Titulo, FechaCreacion FROM PeliculaSerie WHERE PeliculaSerie.Titulo LIKE '%${nombre}%' ORDER BY FechaCreacion ASC`)
-        }
-        else if(orden == "DESC")
-        {
-            results = await conn.request().input("whereCondition", nombre).query(`SELECT Id, Imagen, Titulo, FechaCreacion FROM PeliculaSerie WHERE PeliculaSerie.Titulo LIKE '%${nombre}%' ORDER BY FechaCreacion DESC`)
-        }
-        else
-        {
-            results = await conn.request().input("whereCondition", nombre).query(`SELECT Id, Imagen, Titulo, FechaCreacion FROM PeliculaSerie WHERE PeliculaSerie.Titulo LIKE '%${nombre}%'`)
-        }     
+export const getAllMovies = async () => {
+    const conn      = await sql.connect(configDB);
+    const results   = await conn.request().query('SELECT IDPelicula, Imagen, Titulo, FechaCreacion from Peliculas');
+    return results.recordset; 
+}
+export const filteredMovies = async (pelicula) => {
+    let conn      = await sql.connect(configDB);
+    let results;
+    let query = 'SELECT IDPelicula, Imagen, Titulo, FechaCreacion from Peliculas ';
+    if (pelicula.Nombre){
+        query = query + 'where Titulo = @pTitulo ';
     }
-    else
-    {
-        if(orden == "ASC")
-        {
-            results = await conn.request().query(`SELECT Id, Imagen, Titulo, FechaCreacion FROM PeliculaSerie ORDER BY FechaCreacion ASC`)
-        }
-        else if(orden == "DESC")
-        {
-            results = await conn.request().query(`SELECT Id, Imagen, Titulo, FechaCreacion FROM PeliculaSerie ORDER BY FechaCreacion DESC`)
-        }
-        else{
-            results = await conn.request().query('SELECT Id, Imagen, Titulo, FechaCreacion FROM PeliculaSerie')
-        }
+    if (pelicula.Orden){
+        query = query + 'order by FechaCreacion ' + pelicula.Orden;
     }
-    console.log(results)
-    return results;
+    results   = await conn.request().input('pTitulo', sql.VarChar, pelicula.Nombre).query(query);
+    return results.recordset; 
+}
+export const getDetailedMovie = async (id) => {
+    const conn      = await sql.connect(configDB);
+    const results1  = await conn.request().input('pId', sql.Int, id).query('select * from Peliculas where IDPelicula = @pId;'); 
+    const results2  = await conn.request().input('pId', sql.Int, id).query('select Personajes.* from Personajes inner join Conexiones on Personajes.IDPersonaje = Conexiones.IDPersonaje inner join Peliculas on Conexiones.IDPelicula = Peliculas.IDPelicula where Peliculas.IDPelicula = @pId;');
+    results1.recordset[0].Personajes= results2.recordset;
+    return results1.recordset[0]; 
+}
+export const createMovie = async (movie) => {
+    const conn      = await sql.connect(configDB);
+    const results   = await conn.request().input('pImagen', sql.VarChar, movie.Imagen).input('pTitulo', sql.VarChar, movie.Titulo).input('pFechaCreacion', sql.Date, movie.FechaCreacion).input('pCalificacion', sql.Float, movie.Calificacion).query('INSERT INTO Peliculas (Imagen, Titulo, FechaCreacion, Calificacion) VALUES (@pImagen, @pTitulo, @pFechaCreacion, @pCalificacion)');
+    return results.rowsAffected;
 }
 
-export const getByID = async (numero) => {
-    const conn = await sql.connect(configDB);
-    const results = await conn.request().input("whereCondition", numero).query("SELECT ps.Id, ps.Imagen, ps.Titulo, ps.FechaCreacion, ps.Calificacion, STRING_AGG(p.Nombre + ' (Edad: ' + Convert(VARCHAR(MAX),p.Edad) + ' Peso: ' + Convert(VARCHAR(MAX),p.Peso) + ' Imagen: ' + p.Imagen + ' Historia: ' + p.Historia + ')' , ';') AS Personajes FROM PeliculaSerie ps INNER JOIN PersonajeXPeliculaSerie pxp ON ps.Id = pxp.IdPeliculaSerie INNER JOIN Personaje p ON pxp.IdPersonaje = p.Id WHERE ps.Id = @whereCondition GROUP BY ps.Id, ps.Imagen, ps.Titulo, ps.FechaCreacion, ps.Calificacion");
-    if(results.recordset[0] != undefined){
-    results.recordset[0].Personajes = results.recordset[0].Personajes.split(';')
-    }
-    console.log(results)
-    return results
+export const updateMovie = async (movie, id) => {
+    const conn      = await sql.connect(configDB);
+    const results   = await conn.request().input('pId', sql.Int, id).input('pimagen', sql.VarChar, movie.Imagen).input('pTitulo', sql.VarChar, movie.Titulo).input('pFechaCreacion', sql.Date, movie.FechaCreacion).input('pCalificacion', sql.Float, movie.Calificacion).query('UPDATE Peliculas SET Titulo=@pTitulo, Imagen=@pImagen, FechaCreacion=@pFechaCreacion, Calificacion=@pCalificacion WHERE IDPelicula=@pId');
+    return results.rowsAffected;
 }
 
-export const getByIDSinUnion = async (numero) => {
-    const conn = await sql.connect(configDB);
-    console.log(numero)
-    const results = await conn.request().input("whereCondition", numero).query('SELECT * FROM PeliculaSerie WHERE PeliculaSerie.Id = @whereCondition');
-    console.log(results)
-    return results
-}
-
-export const create = async (peliculaSerie) =>{
-    const conn = await sql.connect(configDB);
-    if(peliculaSerie.calificacion>5)
-    {
-        peliculaSerie.calificacion = 5;
-    }
-    else if(peliculaSerie.calificacion<1)
-    {
-        peliculaSerie.calificacion = 1;
-    }
-    await conn.request()
-    .input("pTitulo", peliculaSerie.titulo)
-    .input("pImagen", peliculaSerie.imagen)
-    .input("pFechaCreacion", peliculaSerie.fechaCreacion)
-    .input("pCalificacion", peliculaSerie.calificacion)
-    .query('INSERT INTO PeliculaSerie (Imagen, Titulo, FechaCreacion, Calificacion) VALUES (@pImagen, @pTitulo, @pFechaCreacion, @pCalificacion)');
-
-}
-
-export const deleteByID = async(numero) =>{
-    const conn = await sql.connect(configDB);
-    await conn.request().input("whereCondition", numero).query('DELETE FROM PeliculaSerie WHERE PeliculaSerie.Id LIKE @whereCondition'); 
-}
-
-export const update = async (id, peliculaSerie) =>{
-    const conn = await sql.connect(configDB);
-    if(peliculaSerie.calificacion>5)
-    {
-        peliculaSerie.calificacion = 5;
-    }
-    else if(peliculaSerie.calificacion<1)
-    {
-        peliculaSerie.calificacion = 1;
-    }
-    await conn.request()
-    .input("whereCondition", id)
-    .input("pTitulo", peliculaSerie.titulo)
-    .input("pImagen", peliculaSerie.imagen)
-    .input("pFechaCreacion", peliculaSerie.fechaCreacion)
-    .input("pCalificacion", peliculaSerie.calificacion)
-    .query('UPDATE PeliculaSerie SET Imagen = @pImagen, Titulo = @pTitulo, FechaCreacion = @pFechaCreacion, Calificacion = @pCalificacion WHERE PeliculaSerie.Id LIKE @whereCondition');
+export const deleteMovie = async (id) => {
+    const conn      = await sql.connect(configDB);
+    const results1   = await conn.request().input('pId', sql.Int, id).query('DELETE FROM Conexiones where IDPelicula = @pId');
+    const results2   = await conn.request().input('pId', sql.Int, id).query('DELETE FROM Peliculas where IDPelicula = @pId');
+    return results1.recordset;
 }
