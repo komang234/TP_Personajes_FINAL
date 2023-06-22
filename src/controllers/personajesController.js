@@ -1,64 +1,73 @@
-import Personaje from "../models/Personaje.js";
 import { Router } from 'express';
-import { Authenticate } from '../common/jwt.strategy.js';
-import { getSignedToken, getRandomString } from '../server.js'
-import { getByParams, getByID, create, deleteByID, update, getByIDSinUnion } from '../services/personajeService.js';
-const controller = Router()
+import Personaje from '../models/personaje.js'; 
+import {filteredCharacters, getAllCharacters, createCharacter, updateCharacter, deleteCharacter, getDetailedCharacter} from '../services/personajesService.js'
+import {Authenticate} from '../common/jwt.strategy.js';
 
-controller.get('/auth/login', async (req, res) => {
-    return res.status(200).json(getSignedToken());
-});
+const router = Router();
 
-controller.get('', Authenticate, async (req, res) => {
-    const name = req.query.name
-    const movies = req.query.movie
-    const age = req.query.age
-    const personajes = await getByParams(name,age,movies)
-
-    return res.status(200).json(personajes);
-});
-
-controller.get('/:id', Authenticate, async (req, res) => {
-    let id = req.params.id
-    console.log("Numero con el cual buscar:" + id)
-    const personaje = await getByID(id);
-    return res.status(200).json(personaje)
+router.get ('/characters', Authenticate, async(req, res)=>{
+    const personaje         = new Personaje();
+    personaje.Nombre        = req.query.name;
+    personaje.Edad          = req.query.age;
+    personaje.Peso          = req.query.weight;
+    personaje.IdPelicula    = req.query.movies;
+    let personajes;
+    if(personaje.Nombre || personaje.Edad || personaje.Peso || personaje.IdPelicula){
+        personajes = await filteredCharacters(personaje);
+    }
+    else{
+        personajes = await getAllCharacters(personaje);
+    }
+    res.status(200).send(personajes);
+})
+router.post ('/characters', Authenticate, async(req, res)=>{
+    let status = 201;
+    const personaje     = new Personaje();
+    personaje.Imagen    = req.body.image;
+    personaje.Nombre    = req.body.name;
+    personaje.Edad      = req.body.age;
+    personaje.Peso      = req.body.weight;
+    personaje.Historia  = req.body.story;
+    const creado        = await createCharacter(personaje);
+    if(creado==null){
+        status = 400;
+    }
+    res.status(status).send(creado);
+})
+router.put ('/characters/:id', Authenticate, async(req, res)=>{
+    let status = 200;
+    const id            = req.params.id;
+    const personaje     = new Personaje();
+    personaje.Imagen    = req.body.image;
+    personaje.Nombre    = req.body.name;
+    personaje.Edad      = req.body.age;
+    personaje.Peso      = req.body.weight;
+    personaje.Historia  = req.body.story;
+    const cambiado      = await updateCharacter(personaje, id);
+    if(req.params.id < 0 || cambiado == null){
+        status = 400;
+    }
+    res.status(status).send(cambiado);
+})
+router.delete ('/characters/:id',Authenticate, async(req, res)=>{
+    let status = 200;
+    if(req.params.id < 0){
+        status = 400;
+    }
+    const idBorrado     = await deleteCharacter(req.params.id);
+    res.status(status).send(idBorrado);
+})
+router.get ('/characters/:id',Authenticate, async(req, res)=>{ 
+    let status = 200;
+    const id               = req.params.id;
+    const personaje    = await getDetailedCharacter(id);
+    if(personaje == null){
+        status = 404;
+    }
+    if (id < 0){
+        status = 400;
+    }
+    res.status(status).send(personaje);
 })
 
-controller.post('', Authenticate, async (req, res)=> {
-    const personaje = new Personaje()
-
-    personaje.imagen = req.body.imagen
-    personaje.nombre = req.body.nombre
-    personaje.edad = req.body.edad
-    personaje.peso = req.body.peso
-    personaje.historia = req.body.historia
-    await create(personaje)
-    return res.status(201).json(personaje)
-})
-
-controller.delete('', Authenticate, async (req, res) => {
-    let personaje2 = new Personaje()
-    const id = req.body.id
-    personaje2 = await getByIDSinUnion(id)
-    console.log(personaje2)
-    await deleteByID(id);
-    return res.status(200).json(personaje2)
-})
-
-controller.put('', Authenticate, async (req, res) => {
-    const id = req.body.id
-    let personaje3 = new Personaje()
-    personaje3 = await getByID(id)
-    const personaje2 = new Personaje()
-    personaje2.imagen = req.body.imagen
-    personaje2.nombre = req.body.nombre
-    personaje2.edad = req.body.edad
-    personaje2.peso = req.body.peso
-    personaje2.historia = req.body.historia
-    personaje3 = {...personaje3, ...personaje2}
-    await update(id, personaje3)
-    return res.status(200).json(personaje3)
-})
-
-export default controller;
+export default router;
