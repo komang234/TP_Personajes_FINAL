@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import Personaje from '../models/personaje.js'; 
-import {filteredCharacters, getAllCharacters, createCharacter, updateCharacter, deleteCharacter, getDetailedCharacter} from '../services/personajesService.js'
+import Personaje from '../models/Personaje.js'; 
+import {filteredCharacters, getAllCharacters, createCharacter, updateCharacter, deleteCharacter, getDetailedCharacter} from '../services/personajeService.js'
 import {Authenticate} from '../common/jwt.strategy.js';
 
 const router = Router();
