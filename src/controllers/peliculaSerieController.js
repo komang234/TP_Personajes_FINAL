@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import Pelicula from '../models/pelicula.js'; 
-import {createMovie, getAllMovies, filteredMovies, getDetailedMovie, updateMovie, deleteMovie} from '../services/peliculasService.js';
+import Pelicula from '../models/Pelicula.js'; 
+import {createMovie, getAllMovies, filteredMovies, getDetailedMovie, updateMovie, deleteMovie} from '../services/peliculaSerieService.js';
 
 const router = Router();
 
