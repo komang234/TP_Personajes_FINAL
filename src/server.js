@@ -1,7 +1,7 @@
 import express from "express";
 import passport from "passport";
 import personajesController from "./controllers/personajesController.js";
-import peliculasController from "./controllers/peliculaSerieController.js";
+import peliculaSerieController from "./controllers/peliculaSerieController.js";
 import {jwtStrategy} from "./common/jwt.strategy.js"
 import auth from "./controllers/auth.js"
 const app = express();
@@ -13,7 +13,7 @@ app.use(passport.initialize());
 
 app.use("", auth)
 app.use("", personajesController)
-app.use("", peliculasController)
+app.use("", peliculaSerieController)
 
 app.listen (port, ()=>{
     console.log(`EJEMPLO ${port}`)
