@@ -10,12 +10,12 @@ export const filteredCharacters = async (personaje) => {
         'SELECT Personajes.Imagen, Personajes.Nombre, Personajes.IDPersonaje FROM Peliculas inner join Conexiones on Peliculas.IDPelicula = Conexiones.IDPelicula inner join Personajes on Conexiones.IDPersonaje = Personajes.IDPersonaje Where Peliculas.IDPelicula = @pIdMovie and'
         : 'SELECT Personajes.Imagen, Personajes.Nombre, Personajes.IDPersonaje FROM Personajes Where'
 
-/*     if (personaje.IdPelicula) {
+    if (personaje.IdPelicula) {
         query = 'SELECT Personajes.Imagen, Personajes.Nombre, Personajes.IDPersonaje FROM Peliculas inner join Conexiones on Peliculas.IDPelicula = Conexiones.IDPelicula inner join Personajes on Conexiones.IDPersonaje = Personajes.IDPersonaje Where Peliculas.IDPelicula = @pIdMovie and';
     }
     else {
         query = 'SELECT Personajes.Imagen, Personajes.Nombre, Personajes.IDPersonaje FROM Personajes Where';
-    } */
+    } 
     if (personaje.Nombre) {
         query = query + ' Personajes.Nombre = @pName and';
     }
