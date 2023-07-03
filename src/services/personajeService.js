@@ -36,6 +36,17 @@ export const getAllCharacters = async () => {
     return results.recordset;
 }
 
+export const getDetailedCharacter = async (id) => {
+    const conn = await sql.connect(configDB);
+    const results1 = await conn.request().input('pId', sql.Int, id).query('select * from Personajes where IDPersonaje = @pId;');
+    const results2 = await conn.request().input('pId', sql.Int, id).query('select Peliculas.* from Peliculas inner join Conexiones on Peliculas.IDPelicula = Conexiones.IDPelicula inner join Personajes on Conexiones.IDPersonaje = Personajes.IDPersonaje where Personajes.IDPersonaje = @pId;');
+    if (results1.recordset[0] === undefined) {
+        return null;
+    }
+    results1.recordset[0].Peliculas = results2.recordset;
+    return results1.recordset[0];
+}
+
 export const createCharacter = async (personaje) => {
     const conn = await sql.connect(configDB);
     const results = await conn.request().input('pImagen', sql.VarChar, personaje.Imagen).input('pNombre', sql.VarChar, personaje.Nombre).input('pEdad', sql.Int, personaje.Edad).input('pPeso', sql.Float, personaje.Peso).input('pHistoria', sql.VarChar, personaje.Historia).query('INSERT INTO Personajes (Imagen, Nombre, Edad, Peso, Historia) VALUES (@pImagen, @pNombre, @pEdad, @pPeso, @pHistoria)');
@@ -53,15 +64,4 @@ export const deleteCharacter = async (id) => {
     const results1 = await conn.request().input('pId', sql.Int, id).query('DELETE FROM Conexiones where IDPersonaje = @pId');
     const results2 = await conn.request().input('pId', sql.Int, id).query('DELETE FROM Personajes where IDPersonaje = @pId');
     return results1.recordset;
-}
-
-export const getDetailedCharacter = async (id) => {
-    const conn = await sql.connect(configDB);
-    const results1 = await conn.request().input('pId', sql.Int, id).query('select * from Personajes where IDPersonaje = @pId;');
-    const results2 = await conn.request().input('pId', sql.Int, id).query('select Peliculas.* from Peliculas inner join Conexiones on Peliculas.IDPelicula = Conexiones.IDPelicula inner join Personajes on Conexiones.IDPersonaje = Personajes.IDPersonaje where Personajes.IDPersonaje = @pId;');
-    if (results1.recordset[0] === undefined) {
-        return null;
-    }
-    results1.recordset[0].Peliculas = results2.recordset;
-    return results1.recordset[0];
 }
