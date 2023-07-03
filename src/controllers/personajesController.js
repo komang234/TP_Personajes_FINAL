@@ -20,7 +20,7 @@ router.get ('/characters', Authenticate, async(req, res)=>{
     }
     res.status(200).send(personajes);
 })
-router.get ('/characters/:id',Authenticate, async(req, res)=>{ 
+router.get ('/characters/:id', Authenticate, async(req, res)=>{ 
     let status = 200;
     const id               = req.params.id;
     const personaje    = await getDetailedCharacter(id);
