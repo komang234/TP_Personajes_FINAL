@@ -20,6 +20,18 @@ router.get ('/characters', Authenticate, async(req, res)=>{
     }
     res.status(200).send(personajes);
 })
+router.get ('/characters/:id',Authenticate, async(req, res)=>{ 
+    let status = 200;
+    const id               = req.params.id;
+    const personaje    = await getDetailedCharacter(id);
+    if(personaje == null){
+        status = 404;
+    }
+    if (id < 0){
+        status = 400;
+    }
+    res.status(status).send(personaje);
+})
 router.post ('/characters', Authenticate, async(req, res)=>{
     let status = 201;
     const personaje     = new Personaje();
@@ -57,17 +69,6 @@ router.delete ('/characters/:id',Authenticate, async(req, res)=>{
     const idBorrado     = await deleteCharacter(req.params.id);
     res.status(status).send(idBorrado);
 })
-router.get ('/characters/:id',Authenticate, async(req, res)=>{ 
-    let status = 200;
-    const id               = req.params.id;
-    const personaje    = await getDetailedCharacter(id);
-    if(personaje == null){
-        status = 404;
-    }
-    if (id < 0){
-        status = 400;
-    }
-    res.status(status).send(personaje);
-})
+
 
 export default router;
