@@ -21,7 +21,7 @@ export const getRandomString = () => {
         payload: "custom payload",
         userEmail: userMail,
       },
-      process.env.AUTH_HS256_KEY,
+      process.env.AUTH_HS292_KEY,
       {
         issuer: process.env.AUTH_ISSUER_URL,
         subject: userId,
