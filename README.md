@@ -3,9 +3,11 @@ Empezemos con esta explicación a nivel básico. Mi nombre es Uriel Kogan y ser�
 ![Welcome](https://i.pinimg.com/736x/f2/c7/f6/f2c7f62b7cfa21d1e92088c855aa3bd4.jpg)
 # ¿Cómo hago para iniciarlo?
 ## La preparación
-Para poder iniciar y correr este proyecto y su API es necesario instalar MS SQL Server y Node cuyos links, dejaré a continuación:
+Para poder iniciar y correr este proyecto y su API es necesario instalar MS SQL Server, Postman y Node, cuyos links, dejaré a continuación:
 
 [Node](https://nodejs.org/es/download)
+
+[Postman](https://www.postman.com/)
 
 [MS SQL SERVER](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
 
