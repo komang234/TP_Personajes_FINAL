@@ -31,5 +31,12 @@ La primera necesidad es ejecutar la query en SQL.
 
 Luego se debe utilizar el comando npm start en la terminal del proyecto (en este caso en la terminal de Visual Studio Code).
 
- 
+# ¿De qué maneras puedo utilizar este proyecto?
+
+Primero será necesario abrir Postman y saber como utilizarlo, para lo cual aquí tengo una guía: 
+[Explicación de Postman](https://developers.sw.com.mx/knowledge-base/guia-se-instalacion-y-funcionamiento-de-postman/)
+
+En este caso el port que se debe utilizar es el 5001.
+
+Otro ejemplo es el que puede dar Swagger, aquí dejo el link al nuestro [swagger.json](./placeholder) 
 
