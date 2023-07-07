@@ -5,7 +5,7 @@ import peliculaSerieController from "./controllers/peliculaSerieController.js";
 import {jwtStrategy} from "./common/jwt.strategy.js"
 import auth from "./controllers/auth.js"
 const app = express();
-const port = 3001;
+const port = 5001;
 app.use(express.json());
 
 passport.use(jwtStrategy);
