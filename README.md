@@ -18,7 +18,14 @@ Adicionalmente es necesario cambiar el nombre de la variable Server en el archiv
 
 Finalmente también se deberá instalar npm al abrir el proyecto, lo cual se puede realizar fácilmente con este corto comando: npm i
 
+## La iniciación
 
+Si cumpliste con los pasos anteriores, es momento de correr el proyecto:
+
+La primera necesidad es ejecutar la query en SQL.
+![Execute](https://github.com/komang234/TP_Personajes_FINAL/assets/116166626/fdc96b8e-108d-46be-bb32-9616c98f1eaa)
+
+Luego se debe utilizar el comando npm start en la terminal del proyecto (en este caso en la terminal de Visual Studio Code).
 
  
 
