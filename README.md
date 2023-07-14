@@ -41,5 +41,5 @@ Primero será necesario abrir Postman y saber como utilizarlo, para lo cual aqu�
 
 En este caso el port que se debe utilizar es el 5001.
 
-Otro ejemplo es el que puede dar Swagger, aquí dejo el link al nuestro [swagger.json](https://github.com/komang234/TP_Personajes_FINAL/blob/main/swagger.yaml) 
+Otro ejemplo es el que puede dar Swagger, aquí dejo el link al nuestro [swagger.yaml](https://github.com/komang234/TP_Personajes_FINAL/blob/main/swagger.yaml) 
 
