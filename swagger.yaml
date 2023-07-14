@@ -3,23 +3,16 @@ info:
   version: "1.0.0"
   title: "API de Película/Serie y Personaje"
 paths:
-  /auth/login:
+  /movies:
     get:
-      summary: Iniciar sesión
-      description: Genera un token de autenticación
-      responses:
-        200:
-          description: Token generado exitosamente
-  /peliculaSerie:
-    get:
-      summary: Obtener lista de películas/series
-      description: Devuelve una lista de todas las películas/series o filtra por nombre y orden
+      summary: Obtener lista de películas
+      description: Devuelve una lista de todas las películas o filtra por nombre y orden
       security:
         - bearerAuth: []
       parameters:
         - name: name
           in: query
-          description: Nombre de la película/serie (opcional)
+          description: Nombre de la película (opcional)
           required: false
           type: string
         - name: order
@@ -31,51 +24,51 @@ paths:
         200:
           description: Operación exitosa
     post:
-      summary: Crear una nueva película/serie
-      description: Crea una nueva película/serie con los datos proporcionados
+      summary: Crear una nueva película
+      description: Crea una nueva película con los datos proporcionados
       security:
         - bearerAuth: []
       parameters:
         - name: body
           in: body
-          description: Datos de la película/serie a crear
+          description: Datos de la película a crear
           required: true
           schema:
-            $ref: "#/definitions/PeliculaSerieInput"
+            $ref: "#/definitions/PeliculaInput"
       responses:
         201:
-          description: Película/serie creada exitosamente
+          description: Película creada exitosamente
     delete:
-      summary: Eliminar una película/serie
-      description: Elimina una película/serie según su ID
+      summary: Eliminar una película
+      description: Elimina una película según su ID
       security:
         - bearerAuth: []
       parameters:
         - name: body
           in: body
-          description: ID de la película/serie a eliminar
+          description: ID de la película a eliminar
           required: true
           schema:
-            $ref: "#/definitions/PeliculaSerieID"
+            $ref: "#/definitions/PeliculaID"
       responses:
         200:
-          description: Película/serie eliminada exitosamente
+          description: Película eliminada exitosamente
     put:
-      summary: Actualizar una película/serie
-      description: Actualiza una película/serie existente con los datos proporcionados
+      summary: Actualizar una película
+      description: Actualiza una película existente con los datos proporcionados
       security:
         - bearerAuth: []
       parameters:
         - name: body
           in: body
-          description: Datos de la película/serie a actualizar
+          description: Datos de la película a actualizar
           required: true
           schema:
-            $ref: "#/definitions/PeliculaSerieUpdate"
+            $ref: "#/definitions/PeliculaUpdate"
       responses:
         200:
-          description: Película/serie actualizada exitosamente
-  /personaje:
+          description: Película actualizada exitosamente
+  /characters:
     get:
       summary: Obtener lista de personajes
       description: Devuelve una lista de todos los personajes o filtra por nombre, edad y películas
@@ -153,7 +146,33 @@ securityDefinitions:
     in: header
 
 definitions:
-  PeliculaSerieInput:
+  PeliculaInput:
     type: object
     properties:
       imagen:
+        type: string
+  PeliculaID:
+    type: object
+    properties:
+      id:
+        type: string
+  PeliculaUpdate:
+    type: object
+    properties:
+      imagen:
+        type: string
+  PersonajeInput:
+    type: object
+    properties:
+      nombre:
+        type: string
+  PersonajeID:
+    type: object
+    properties:
+      id:
+        type: string
+  PersonajeUpdate:
+    type: object
+    properties:
+      nombre:
+        type: string
