@@ -1,0 +1,159 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "API de Película/Serie y Personaje"
+paths:
+  /auth/login:
+    get:
+      summary: Iniciar sesión
+      description: Genera un token de autenticación
+      responses:
+        200:
+          description: Token generado exitosamente
+  /peliculaSerie:
+    get:
+      summary: Obtener lista de películas/series
+      description: Devuelve una lista de todas las películas/series o filtra por nombre y orden
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: name
+          in: query
+          description: Nombre de la película/serie (opcional)
+          required: false
+          type: string
+        - name: order
+          in: query
+          description: Orden de la lista ('asc' o 'desc') (opcional)
+          required: false
+          type: string
+      responses:
+        200:
+          description: Operación exitosa
+    post:
+      summary: Crear una nueva película/serie
+      description: Crea una nueva película/serie con los datos proporcionados
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: body
+          in: body
+          description: Datos de la película/serie a crear
+          required: true
+          schema:
+            $ref: "#/definitions/PeliculaSerieInput"
+      responses:
+        201:
+          description: Película/serie creada exitosamente
+    delete:
+      summary: Eliminar una película/serie
+      description: Elimina una película/serie según su ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: body
+          in: body
+          description: ID de la película/serie a eliminar
+          required: true
+          schema:
+            $ref: "#/definitions/PeliculaSerieID"
+      responses:
+        200:
+          description: Película/serie eliminada exitosamente
+    put:
+      summary: Actualizar una película/serie
+      description: Actualiza una película/serie existente con los datos proporcionados
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: body
+          in: body
+          description: Datos de la película/serie a actualizar
+          required: true
+          schema:
+            $ref: "#/definitions/PeliculaSerieUpdate"
+      responses:
+        200:
+          description: Película/serie actualizada exitosamente
+  /personaje:
+    get:
+      summary: Obtener lista de personajes
+      description: Devuelve una lista de todos los personajes o filtra por nombre, edad y películas
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: name
+          in: query
+          description: Nombre del personaje (opcional)
+          required: false
+          type: string
+        - name: movie
+          in: query
+          description: ID de la película en la que aparece el personaje (opcional)
+          required: false
+          type: string
+        - name: age
+          in: query
+          description: Edad del personaje (opcional)
+          required: false
+          type: integer
+      responses:
+        200:
+          description: Operación exitosa
+    post:
+      summary: Crear un nuevo personaje
+      description: Crea un nuevo personaje con los datos proporcionados
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: body
+          in: body
+          description: Datos del personaje a crear
+          required: true
+          schema:
+            $ref: "#/definitions/PersonajeInput"
+      responses:
+        201:
+          description: Personaje creado exitosamente
+    delete:
+      summary: Eliminar un personaje
+      description: Elimina un personaje según su ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: body
+          in: body
+          description: ID del personaje a eliminar
+          required: true
+          schema:
+            $ref: "#/definitions/PersonajeID"
+      responses:
+        200:
+          description: Personaje eliminado exitosamente
+    put:
+      summary: Actualizar un personaje
+      description: Actualiza un personaje existente con los datos proporcionados
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: body
+          in: body
+          description: Datos del personaje a actualizar
+          required: true
+          schema:
+            $ref: "#/definitions/PersonajeUpdate"
+      responses:
+        200:
+          description: Personaje actualizado exitosamente
+
+securityDefinitions:
+  bearerAuth:
+    type: apiKey
+    name: Authorization
+    in: header
+
+definitions:
+  PeliculaSerieInput:
+    type: object
+    properties:
+      imagen:
